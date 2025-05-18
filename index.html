@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storiella silly</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1ed;
+      --card: #ffffff;
+      --text: #333333;
+      --accent: #8b5e3c;
+      --narration-font: 'Lora', serif;
+      --dialogue-font: 'Open Sans', sans-serif;
+      --narration-size: 1rem;
+      --dialogue-size: 1rem;
+      --zoom: 1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--dialogue-font);
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+    #controls {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: var(--card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 10;
+    }
+    #controls h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-family: var(--narration-font);
+    }
+    .control-group {
+      margin-bottom: 1rem;
+    }
+    .speaker-setting, .size-setting {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .speaker-setting label, .size-setting label {
+      margin-right: 0.3rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .size-setting input {
+      width: 100px;
+    }
+    #story-wrapper {
+      transform: scale(var(--zoom));
+      transform-origin: top center;
+      padding: 0 1rem;
+    }
+    #story-container {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    .line-card {
+      background: var(--card);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .line-card:hover {
+      transform: translateY(-2px);
+    }
+    .scene-heading {
+      text-align: center;
+      font-family: var(--narration-font);
+      font-weight: 700;
+      margin: 2rem 0 1rem;
+      letter-spacing: 1px;
+      color: var(--accent);
+      font-size: calc(var(--narration-size) * 1.2);
+    }
+    .narration {
+      font-style: italic;
+      color: #555;
+      font-family: var(--narration-font);
+      font-size: var(--narration-size);
+    }
+    .dialogue p {
+      font-size: var(--dialogue-size);
+    }
+    .dialogue strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      font-size: var(--dialogue-size);
+    }
+    @media (max-width: 600px) {
+      #controls { padding: 0.5rem; }
+      .size-setting input { width: 80px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <h2>Display Settings</h2>
+    <div class="control-group" id="fontControls">
+      <div class="size-setting">
+        <label for="dialogueSize">Dialogue Size</label>
+        <input id="dialogueSize" type="range" min="12" max="24" value="16"> px
+      </div>
+      <div class="size-setting">
+        <label for="narrationSize">Narration Size</label>
+        <input id="narrationSize" type="range" min="12" max="24" value="16"> px
+      </div>
+      <div class="size-setting">
+        <label for="zoomControl">Zoom</label>
+        <input id="zoomControl" type="range" min="100" max="200" value="100"> %
+      </div>
+    </div>
+    <div id="speakerControls" class="control-group"></div>
+  </div>
+
+  <div id="story-wrapper">
+    <div id="story-container">
+      <div id="story"></div>
+    </div>
+  </div>
+
+  <script id="storyData" type="application/json">
+  [   
+  { "speaker": "Narration", "text": "BEDROOM – LATE AFTERNOON" },
+  { "speaker": "Narration", "text": "The golden light of sunset spills across the floor. The room is quiet, save for the soft hum of traffic outside. Steph's sketchbook lies on the bed—half-hidden under a blanket, its edges worn, pages curled." },
+  { "speaker": "Narration", "text": "Purvena, curious and a little bored, hesitates at the edge of the bed." },
+  { "speaker": "Purvena", "text": "(softly) She always guards this like a secret." },
+  { "speaker": "Narration", "text": "She glances toward the bathroom—still running water. Hesitating just a moment longer, she picks up the sketchbook and flips it open." },
+  { "speaker": "Narration", "text": "The first pages are innocuous. Doodles. Flowers. Bits of poetry. A self-portrait with charcoal-smudged eyes." },
+  { "speaker": "Narration", "text": "Then she turns a page:" },
+  { "speaker": "Narration", "text": "“Why won’t you let me disappear?”" },
+  { "speaker": "Narration", "text": "She blinks. Frowns. Flips to the next one." },
+  { "speaker": "Narration", "text": "“If I smile, will you stop asking?”" },
+  { "speaker": "Narration", "text": "“I don’t belong here, but no one notices.”" },
+  { "speaker": "Narration", "text": "The sketches grow darker. Scribbles over faces. A person in a crowd, completely shaded in black. One page is just the word “enough” written over and over until the pen tore through." },
+  { "speaker": "Purvena", "text": "(whispers) What is this…" },
+  { "speaker": "Narration", "text": "Her fingers tremble as she keeps going. Page after page, the words grow heavier:" },
+  { "speaker": "Narration", "text": "“You make me want to live—and I hate you for it.”" },
+  { "speaker": "Narration", "text": "“Stop pretending you see me.”" },
+  { "speaker": "Narration", "text": "“I’m a burden wearing a smile.”" },
+  { "speaker": "Narration", "text": "She’s still staring when the bathroom door creaks open." },
+  { "speaker": "Steph", "text": "(quiet, sharp) What the hell are you doing?" },
+  { "speaker": "Purvena", "text": "I—I’m sorry. I didn’t mean to—I was just—" },
+  { "speaker": "Steph", "text": "You read it?" },
+  { "speaker": "Purvena", "text": "Not all of it. Just—some. It just—got darker and I—I got scared." },
+  { "speaker": "Steph", "text": "It’s nothing. Just sketches. Drama. You know me." },
+  { "speaker": "Purvena", "text": "That’s not drama. That was pain. Why didn’t you tell me?" },
+  { "speaker": "Steph", "text": "Because you’d look at me like you’re looking at me now." },
+  { "speaker": "Narration", "text": "There’s a silence. Long and taut." },
+  { "speaker": "Purvena", "text": "You can talk to me. Please—whatever this is, I want to help." },
+  { "speaker": "Steph", "text": "You can’t fix me. You’ll just get tired and leave like everyone else." },
+  { "speaker": "Purvena", "text": "That’s not true—" },
+  { "speaker": "Steph", "text": "(voice rising) You don’t know me. You think you do, but you don’t know what it’s like to be this broken and still have to smile because you don’t want to hurt the people who actually matter." },
+  { "speaker": "Narration", "text": "She’s crying now—but furious with herself for it." },
+  { "speaker": "Purvena", "text": "Then help me understand. Don’t shut me out." },
+  { "speaker": "Narration", "text": "Steph swallows hard. Doesn’t respond. Just stares past her, fists clenched." },
+
+  { "speaker": "Narration", "text": "BEDROOM – NIGHT" },
+  { "speaker": "Narration", "text": "The room is dim now. Only the streetlight outside leaks in, casting long shadows across the floor. The sketchbook lies open, the page still fresh with her last words:" },
+  { "speaker": "Narration", "text": "“I pushed her away. Again. I don’t know how to stop.”" },
+  { "speaker": "Narration", "text": "Steph lies curled on her side, arms around her knees. The silence presses down like a weight." },
+  { "speaker": "Narration", "text": "She stares blankly at the wall, eyes red-rimmed but dry. The exhaustion is no longer emotional—it’s physical. Bone-deep." },
+  { "speaker": "Narration", "text": "She reaches under the bed slowly and pulls out a small, worn box. Opens it." },
+  { "speaker": "Narration", "text": "Inside: a few old photos. A letter she never sent. A razor blade, clean but cold-looking under the glow." },
+  { "speaker": "Narration", "text": "She takes it between her fingers. Not with urgency—but a strange stillness. Her breath catches." },
+  { "speaker": "Steph", "text": "(whispering to herself) It would be so quiet. So easy." },
+  { "speaker": "Narration", "text": "Her hand trembles. She rolls up her sleeve. A line of old, faded scars stares back at her—some neat, some frantic." },
+  { "speaker": "Narration", "text": "She presses the blade to her skin—but doesn’t cut." },
+  { "speaker": "Narration", "text": "A memory flashes." },
+  { "speaker": "Narration", "text": "FLASHBACK – PURVENA LAUGHING Throwing popcorn at her on movie night. That stupid, dorky laugh. No judgment. Just joy." },
+  { "speaker": "Narration", "text": "FLASHBACK – PURVENA’S FACE EARLIER “I want to help.” “You’re not crazy.”" },
+  { "speaker": "Narration", "text": "She breathes in sharply. The metal slips slightly. A shallow line forms—barely breaks the surface." },
+  { "speaker": "Narration", "text": "Then she gasps. Drops the blade." },
+  { "speaker": "Steph", "text": "(choking out) No. No, no, no…" },
+  { "speaker": "Narration", "text": "She hugs her arm to her chest, curling forward." },
+  { "speaker": "Steph", "text": "She’d cry. She’d blame herself." },
+  { "speaker": "Narration", "text": "She sobs now. Not like before—this is ugly, heaving grief. The kind that’s been waiting to break loose." },
+  { "speaker": "Narration", "text": "She pushes the box away, kicks it under the bed. Stumbles toward her desk and pulls open a drawer." },
+  { "speaker": "Narration", "text": "Shaking hands find a bandage. She wraps her arm with the practiced care of someone who’s done it too many times." },
+  { "speaker": "Narration", "text": "She sits down. Opens her notebook again." },
+  { "speaker": "Narration", "text": "This time, a new page." },
+  { "speaker": "Narration", "text": "She writes: “I almost did it. I wanted to. But I remembered her face.” “I don’t want her to cry over me.” “I’m not okay. But I’m still here.” She underlines it. “Still here.” She stares at the words. Then reaches for her phone." },
+  { "speaker": "Steph", "text": "(whispers) Please still want to come back tomorrow." },
+
+  { "speaker": "Narration", "text": "NEXT DAY, BEDROOM – LATE AFTERNOON" },
+  { "speaker": "Narration", "text": "The curtains are drawn. The air feels stale. Steph sits cross-legged on the bed, scribbling in her sketchbook, headphones on. Her hoodie sleeves are pulled over her hands, stained faintly with graphite." },
+  { "speaker": "Narration", "text": "She’s writing again—not art, just fragments: “I don’t deserve the way you look at me.” “Don’t make me feel real.” “If I vanish, pretend I was never kind.”" },
+  { "speaker": "Narration", "text": "The pencil presses hard—snaps. She stares at the broken tip." },
+  { "speaker": "Narration", "text": "A knock. Then her friend opens the door without waiting." },
+  { "speaker": "Purvena", "text": "Hey. You didn’t answer my texts." },
+  { "speaker": "Narration", "text": "Steph doesn’t look up." },
+  { "speaker": "Steph", "text": "Didn’t feel like talking." },
+  { "speaker": "Purvena", "text": "Okay. I just… I brought your charger back." },
+  { "speaker": "Narration", "text": "She sets it down, notices the sketchbook. Notices how Steph tenses." },
+  { "speaker": "Purvena", "text": "You okay?" },
+  { "speaker": "Steph", "text": "Do I look okay?" },
+  { "speaker": "Purvena", "text": "I mean—no, but I thought maybe you’d tell me what’s going on." },
+  { "speaker": "Steph", "text": "Why? So you can feel like a good person for listening?" },
+  { "speaker": "Purvena", "text": "What the hell? Where is that coming from?" },
+  { "speaker": "Steph", "text": "It’s always the same. You ask, I open up, then you get weird and distant and I end up feeling stupid for trusting you." },
+  { "speaker": "Purvena", "text": "I’m not distant—I just didn’t know what to say last time. You dropped “I want to disappear” like it was nothing." },
+  { "speaker": "Steph", "text": "Because it is nothing. It’s always nothing until someone actually does it, right?" },
+  { "speaker": "Narration", "text": "Silence." },
+  { "speaker": "Purvena", "text": "Is that what this is? Are you planning to hurt yourself?" },
+  { "speaker": "Steph", "text": "No. Maybe. I don’t know. You think it’s all about the blade, but it’s not. It’s about screaming into a void and realizing no one hears you because you were too quiet, too dramatic, too much." },
+  { "speaker": "Purvena", "text": "I hear you, okay? I’m here." },
+  { "speaker": "Steph", "text": "Until when?" },
+  { "speaker": "Purvena", "text": "Don’t do that." },
+  { "speaker": "Steph", "text": "Do what?" },
+  { "speaker": "Purvena", "text": "Push me away and beg me to stay. I can’t read your mind, and I’m not the villain here." },
+  { "speaker": "Narration", "text": "Steph flinches like she’s been slapped. She turns her head, blinking fast." },
+  { "speaker": "Steph", "text": "I didn’t ask to feel like this. I didn’t ask to wake up and already feel abandoned." },
+  { "speaker": "Purvena", "text": "Then talk to me, don’t test me." },
+  { "speaker": "Narration", "text": "Steph stares at her lap. The silence stretches." },
+  { "speaker": "Steph", "text": "Last night I sat on the floor and stared at that razor for an hour. You know what stopped me?" },
+  { "speaker": "Purvena", "text": "What?" },
+  { "speaker": "Steph", "text": "I imagined your face at my funeral. I didn’t want to be the reason you cried." },
+  { "speaker": "Purvena", "text": "Then let me be the reason you stay." },
+  { "speaker": "Steph", "text": "You say that now." },
+  { "speaker": "Purvena", "text": "And I’ll say it again tomorrow. Even if you hate me in between." },
+  { "speaker": "Narration", "text": "She sits on the floor, not too close. Just there." },
+  { "speaker": "Narration", "text": "Steph doesn’t move. Doesn’t cry. Just breathes—shallow and uneven." },
+  { "speaker": "Steph", "text": "It hurts so much. Being awake. Being loved. Being afraid of it." },
+  { "speaker": "Purvena", "text": "Then let’s sit in the hurt. For a bit. Together." },
+  { "speaker": "Narration", "text": "Steph says nothing." },
+
+  { "speaker": "Narration", "text": "BEDROOM – NIGHTFALL" },
+  { "speaker": "Narration", "text": "The silence is different now. Not sharp like before—softer. Like a bruise being touched gently." },
+  { "speaker": "Narration", "text": "Steph hasn’t moved. Still cross-legged, but her shoulders have loosened. The sketchbook rests beside her, half-forgotten." },
+  { "speaker": "Narration", "text": "Purvena stays seated on the floor. Quiet. Not pressing. Just present." },
+  { "speaker": "Steph", "text": "Do you think I make it all up?" },
+  { "speaker": "Purvena", "text": "What?" },
+  { "speaker": "Steph", "text": "The pain. The fear. The… drama. Sometimes I wonder if I just—create it. So people won’t leave." },
+  { "speaker": "Purvena", "text": "That sounds exhausting." },
+  { "speaker": "Steph", "text": "It IS. I go from needing someone so bad it hurts to wanting to erase them from my life the second I feel too seen. Like you’re looking at me right now. It makes me want to crawl out of my skin." },
+  { "speaker": "Purvena", "text": "I’m not judging you." },
+  { "speaker": "Steph", "text": "But you WILL. Eventually. Everyone does. I get too intense. Too clingy. Too angry. Too.. everything." },
+  { "speaker": "Narration", "text": "She grips her sleeves, pulling them over her hands like armor." },
+  { "speaker": "Steph", "text": "I don’t even know what’s real sometimes. Like—do I love you? Or do I just love that you haven’t left? Would I care this much if someone else had stayed instead?" },
+  { "speaker": "Purvena", "text": "I think you care. But I also think it’s okay not to know exactly how. Not right now." },
+  { "speaker": "Narration", "text": "Steph looks away, jaw tight. Her voice drops." },
+  { "speaker": "Steph", "text": "I test people. Push them. I need to see how far I can go before they finally say, “That’s it.” But when they do… it destroys me." },
+  { "speaker": "Purvena", "text": "And you hate yourself more." },
+  { "speaker": "Narration", "text": "Steph flinches again—quietly—but nods." },
+  { "speaker": "Steph", "text": "I don’t want to be like this. I try. I swear I try. I wake up some mornings and tell myself, “Today I’ll be normal. Chill. Easy to love.” And then by noon I’m spiraling because you took too long to text back and I’m convinced you hate me." },
+  { "speaker": "Purvena", "text": "I don’t hate you." },
+  { "speaker": "Steph", "text": "You will. Sooner or later. You’ll get tired." },
+  { "speaker": "Purvena", "text": "I get tired WITH you. Not OF you." },
+  { "speaker": "Narration", "text": "Steph’s lips part slightly, like she doesn’t know how to receive that." },
+  { "speaker": "Steph", "text": "How do you know this isn’t manipulation? That I’m not just saying the right things to make you stay?" },
+  { "speaker": "Purvena", "text": "Because you ARE manipulating me sometimes. And sometimes you’re not. You’re scared, Steph. You’re hurting. That doesn’t make you a monster—it makes you human. Complicated. Messy. But not evil." },
+  { "speaker": "Narration", "text": "Steph blinks—rapidly, trying not to cry again." },
+  { "speaker": "Steph", "text": "You make it sound simple." },
+  { "speaker": "Purvena", "text": "No. Just possible." },
+  { "speaker": "Steph", "text": "But what if I never get better?" },
+  { "speaker": "Purvena", "text": "Then I’ll learn how to stand with you in the storm. Even if I get wet. Even if it scares me too." },
+  { "speaker": "Steph", "text": "What if I ruin you?" },
+  { "speaker": "Purvena", "text": "Then I’ll draw my boundaries. But I’ll still care." },
+  { "speaker": "Narration", "text": "Steph breathes in sharply. It’s not quite a sob—but close. She covers her face with her hands." },
+  { "speaker": "Narration", "text": "Silence. Then:" },
+  { "speaker": "Steph", "text": "I don't even know what I feel most of the time. Just—empty or too full. No in-between." },
+  { "speaker": "Purvena", "text": "Do you want help? Like… actual help? A therapist?" },
+  { "speaker": "Steph", "text": "I tried. I lie to them. Tell them what they want to hear. I don't know how to be honest when I'm scared they'll lock me up or stop trying." },
+  { "speaker": "Purvena", "text": "Then maybe you need someone to go with you. Sit in the waiting room. Remind you that it’s okay to be scared and still try again." },
+  { "speaker": "Narration", "text": "Steph glances over. A flicker of hope. Of fear. Of disbelief." },
+  { "speaker": "Steph", "text": "Would you do that?" },
+  { "speaker": "Purvena", "text": "Yeah. I would." },
+  { "speaker": "Steph", "text": "Can I ask you something?" },
+  { "speaker": "Purvena", "text": "Anything." },
+  { "speaker": "Steph", "text": "If I tell you I hate you tomorrow—just for a moment—will you remember what I said tonight?" },
+  { "speaker": "Purvena", "text": "Yeah. I will." },
+  { "speaker": "Steph", "text": "And if I beg you not to leave and then scream at you to go—will you stay anyway?" },
+  { "speaker": "Purvena", "text": "I’ll stay. And I’ll remind you that this isn’t the end of us. Just a storm. And storms pass." },
+  { "speaker": "Narration", "text": "Steph presses her hand over her heart, like she’s trying to hold herself together." },
+  { "speaker": "Narration", "text": "After a while, Steph reaches for her sketchbook again. Her hand shakes—but she opens to a fresh page. Picks up her pencil." },
+  { "speaker": "Narration", "text": "She writes: “Tonight I didn’t ruin it. She stayed.” Then she adds: “I still don’t deserve her. But I want to try.”" },
+  
+
+  { "speaker": "Narration", "text": "NEXT DAY, BEDROOM – AFTERNOON" },
+  { "speaker": "Narration", "text": "A warm glow from Steph's monitor paints the darkened room in flickers of pale blue. The soft hum of her PC is broken by bursts of keyboard clatter and occasional exasperated sighs." },
+  { "speaker": "Narration", "text": "Steph sits hunched at her desk, eyes locked on a 3D model—an armored figure on screen, its new textures shimmering under simulated lighting. She’s tweaking tiny details obsessively, zooming in and out, hands moving fast." },
+  { "speaker": "Narration", "text": "Purvena sits on the edge of the bed, watching. She holds a can of soda, mostly untouched." },
+  { "speaker": "Purvena", "text": "Steph, that looks insane. Like... actually beautiful." },
+  { "speaker": "Steph", "text": "No it doesn’t. The spec map is muddy, the UVs are trash, and the shoulders don’t even align under lighting." },
+  { "speaker": "Purvena", "text": "I don’t even know what half those words mean and it still looks better than half the stuff I’ve seen in games." },
+  { "speaker": "Narration", "text": "Steph exhales sharply through her nose. Shakes her head." },
+  { "speaker": "Steph", "text": "Yeah, well. I can make it look good for someone else. Just not for me." },
+  { "speaker": "Narration", "text": "Purvena leans forward a little." },
+  { "speaker": "Purvena", "text": "What do you mean?" },
+  { "speaker": "Narration", "text": "Steph finally stops working. Her hands rest on the keyboard. She stares at the screen, expression distant." },
+  { "speaker": "Steph", "text": "I love doing things for people. If it’s your character? I’ll spend all night getting the shaders perfect. If it’s mine? I give up halfway. I don’t know why—I just... hate everything I make when it’s for me." },
+  { "speaker": "Purvena", "text": "But why? You’re—seriously—brilliant at this." },
+  { "speaker": "Narration", "text": "Steph finally looks at her. Her expression is somewhere between anger and exhaustion." },
+  { "speaker": "Steph", "text": "Because when it’s mine, it means something. And if it sucks, I suck. Not just the work. Me." },
+  { "speaker": "Narration", "text": "She shrugs, quickly, like she’s trying to shrug the feeling off too." },
+  { "speaker": "Steph", "text": "It’s easier to be useful than to be worth anything on my own." },
+  { "speaker": "Narration", "text": "Purvena says nothing for a second. Then gently:" },
+  { "speaker": "Purvena", "text": "That’s a pretty brutal way to live, don’t you think?" },
+  { "speaker": "Narration", "text": "Steph lets out a short laugh—but it’s brittle." },
+  { "speaker": "Steph", "text": "Yeah. Welcome to the show." },
+  { "speaker": "Narration", "text": "She turns back to the screen, twisting the model’s viewport aimlessly." },
+  { "speaker": "Steph", "text": "And no matter what I make, I still feel like a fraud. It’s like—everyone else gets better. I just get louder about my insecurities." },
+  { "speaker": "Purvena", "text": "You’re not a fraud. You’re just... tired." },
+  { "speaker": "Narration", "text": "Steph doesn't respond. Her mouse hand trembles slightly. She notices it and quickly tucks it under the desk." },
+  { "speaker": "Purvena", "text": "You deserve to make things that matter to you. You deserve to be proud of yourself." },
+  { "speaker": "Steph", "text": "I don’t know how to do that." },
+  { "speaker": "Purvena", "text": "Then let’s figure it out. Not today, maybe. But slowly. I’ll sit here while you rage at textures all you want." },
+  { "speaker": "Narration", "text": "Steph swallows. Her voice is softer now, almost too quiet." },
+  { "speaker": "Steph", "text": "You sure? I’m not exactly fun to be around when I’m like this." },
+  { "speaker": "Purvena", "text": "Yeah. I’m sure." },
+  { "speaker": "Narration", "text": "Steph nods, still staring at the screen—but something in her posture softens." },
+  { "speaker": "Narration", "text": "She reopens the texture editor." },
+  { "speaker": "Steph", "text": "If I scream at the normal map again, just pretend it’s not personal." },
+  { "speaker": "Purvena", "text": "Screaming is absolutely personal. But I’ll allow it." },
+  { "speaker": "Narration", "text": "The two sit quietly, the screen flickering in front of them. The room isn't any less tense, but it's not as lonely now." }
+  ]
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const root = document.documentElement;
+      // Size controls
+      const dSize = document.getElementById('dialogueSize');
+      const nSize = document.getElementById('narrationSize');
+      const zoom = document.getElementById('zoomControl');
+      dSize.addEventListener('input', () => root.style.setProperty('--dialogue-size', `${dSize.value}px`));
+      nSize.addEventListener('input', () => root.style.setProperty('--narration-size', `${nSize.value}px`));
+      zoom.addEventListener('input', () => root.style.setProperty('--zoom', zoom.value / 100));
+
+      const storyLines = JSON.parse(document.getElementById('storyData').textContent);
+      const speakers = [...new Set(storyLines.map(l => l.speaker))];
+      const speakerColors = {};
+      const controlsEl = document.getElementById('speakerControls');
+      const storyEl = document.getElementById('story');
+
+      // build speaker controls
+      speakers.forEach(sp => {
+        speakerColors[sp] = sp === 'Narration' ? '#555555' : getRandomColor();
+        const div = document.createElement('div'); div.className = 'speaker-setting';
+        div.innerHTML = `<label>${sp}</label><input type='color' value='${speakerColors[sp]}' data-sp='${sp}'>`;
+        controlsEl.appendChild(div);
+      });
+      controlsEl.querySelectorAll('input[type=color]').forEach(inp => {
+        inp.addEventListener('input', e => { speakerColors[e.target.dataset.sp] = e.target.value; render(); });
+      });
+
+      function render() {
+        storyEl.innerHTML = '';
+        storyLines.forEach(({ speaker, text }) => {
+          if (speaker === 'Narration' && text.match(/BEDROOM|EXT\./)) {
+            const h = document.createElement('h3'); h.className = 'scene-heading'; h.textContent = text;
+            storyEl.appendChild(h);
+            return;
+          }
+          const card = document.createElement('div'); card.className = 'line-card';
+          const colored = speakerColors[speaker] || '#000';
+          if (speaker === 'Narration') {
+            const p = document.createElement('p'); p.className = 'narration'; p.textContent = text;
+            p.style.color = colored;
+            card.appendChild(p);
+          } else {
+            const wrap = document.createElement('div'); wrap.className = 'dialogue';
+            const label = document.createElement('strong'); label.textContent = speaker;
+            label.style.color = colored;
+            const p = document.createElement('p'); p.textContent = text;
+            p.style.color = colored;
+            wrap.appendChild(label); wrap.appendChild(p);
+            card.appendChild(wrap);
+          }
+          storyEl.appendChild(card);
+        });
+      }
+
+      function getRandomColor() {
+        const h = Math.floor(Math.random()*360);
+        return `hsl(${h},60%,45%)`;
+      }
+      render();
+    });
+  </script>
+</body>
+</html>
